@@ -1,5 +1,5 @@
 $LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
-require "todolist/app/config/application.rb"
+require 'todolist/app/config/application.rb'
 require 'rspec'
 require 'rack/test'
 
