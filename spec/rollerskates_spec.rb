@@ -3,8 +3,10 @@ require 'spec_helper'
 describe 'Todolist App' do
   include Rack::Test::Methods
 
+  TodoApplication = Todolist::Application.new
   def app
-    Todolist::Application.new
+    require "todolist/config/routes.rb"
+    TodoApplication
   end
 
   it 'returns a list of all my todos' do
