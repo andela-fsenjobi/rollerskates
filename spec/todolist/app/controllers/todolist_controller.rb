@@ -1,4 +1,8 @@
 class TodolistController
+  def initialize(request)
+    @request = request
+  end
+
   def get
     "['Write a book', 'Build a house', 'Get married', 'Buy a car']"
   end
