@@ -11,9 +11,9 @@ module Rollerskates
       route = mapper.map_to_route(@request)
       if route
         response = route.dispatch
-        return [200, { "Content-Type" => "text/html" }, [response]]
+        return [200, { 'Content-Type' => 'text/html' }, [response]]
       end
-      [404, {}, ["Route not found"]]
+      [404, {}, ['Route not found']]
     end
 
     def mapper
