@@ -18,7 +18,7 @@ describe 'Todolist App' do
   end
 
   it 'returns first item in my todolist' do
-    get '/todolist/first'
+    get '/todolist/1'
     expect(last_response).to be_ok
     expect(last_response.body).to eq('Write a book')
   end
@@ -30,13 +30,19 @@ describe 'Todolist App' do
   end
 
   it 'can respond to put request' do
-    put '/todolist'
+    put '/todolist/10'
+    expect(last_response).to be_ok
+    expect(last_response.body).to eq('Put Write a book')
+  end
+
+  it 'can respond to get request' do
+    get '/todolist/10/edit'
     expect(last_response).to be_ok
     expect(last_response.body).to eq('Put Write a book')
   end
 
   it 'can respond to delete request' do
-    delete '/todolist'
+    delete '/todolist/12'
     expect(last_response).to be_ok
     expect(last_response.body).to eq('Delete Write a book')
   end
