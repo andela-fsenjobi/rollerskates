@@ -1,2 +1,4 @@
 require './config/application.rb'
-run Todolist::Application.new
+TodoApplication = Todolist::Application.new
+require "./config/routes.rb"
+run TodoApplication
