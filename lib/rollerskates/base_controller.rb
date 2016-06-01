@@ -3,6 +3,10 @@ require "tilt"
 
 module Rollerskates
   class BaseController
+    def initialize(env)
+      @request ||= env
+    end
+
     def render(view_name, locals={})
       file_name = File.join("app", "views", controller_name, "#{view_name}.erb")
       template = Tilt.new(file_name)

@@ -30,9 +30,9 @@ module Rollerskates
     		]
     	end
 
-    	def resources(controller_name)
+    	def resources(controller_name, options = {})
     	  default_actions.each do |value|
-    	  	  path_suffix = "/#{value[2]}" if value[2]
+    	  	  path_suffix = value[2] ? "/#{value[2]}" : ""
     	  	  path = "/#{controller_name}#{path_suffix}"
             action = "#{controller_name}##{value[0]}"
             send(value[1], path, to: action)

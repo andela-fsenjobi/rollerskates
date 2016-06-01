@@ -1,6 +1,6 @@
-class TodolistController
-  def initialize(request)
-    @request = request
+class TodolistController < Rollerskates::BaseController
+  def about
+    render :about, name: "Femi"
   end
 
   def index
