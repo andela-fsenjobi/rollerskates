@@ -54,8 +54,8 @@ module Rollerskates
     	  end
     	end
 
-      def root(to)
-        get '/', to: to
+      def root(location)
+        get '/', to: location
       end
 
       def endpoints
