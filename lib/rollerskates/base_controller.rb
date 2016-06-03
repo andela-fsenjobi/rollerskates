@@ -9,7 +9,7 @@ module Rollerskates
     def initialize(obj)
       @main_object = obj
     end
-    # 
+    #
     # def method_missing(method, *args)
     #   @main_object.send(method, *args)
     # end
@@ -28,7 +28,19 @@ module Rollerskates
       hash
     end
 
-    def render(view_name, locals={})
+    def response(body = [], status = 200, header = {})
+      @response = Rack::Response.new(body, status, header)
+    end
+
+    def get_response
+      @response
+    end
+
+    def render(*args)
+      response(render_template(*args))
+    end
+
+    def render_template(view_name, locals={})
       file_name = File.join("app", "views", controller_name, "#{view_name}.erb")
       template = Tilt.new(file_name)
       obj = get_view_object
@@ -41,6 +53,15 @@ module Rollerskates
         obj.instance_variable_set("@#{key}", value)
       end
       obj
+    end
+
+    def finish(method_name)
+      if get_response
+        get_response
+      else
+        render(method_name, locals = {})
+        get_response
+      end
     end
 
     def controller_name
