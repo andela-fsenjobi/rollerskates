@@ -13,7 +13,7 @@ module Rollerskates
       end
 
       def dispatch
-        klass.new(request)#.send(method_name)
+        klass.new(request)
       end
     end
   end
