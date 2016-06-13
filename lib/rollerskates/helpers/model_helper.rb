@@ -2,14 +2,10 @@ require 'sqlite3'
 
 module Rollerskates
   class ModelHelper
-    @@db = SQLite3::Database.new File.join("db", "app.db")
-    
+    @@db ||= SQLite3::Database.new File.join("db", "app.db")
+
     def update_query
-      <<SQL
-UPDATE "#{table_name}"
-SET title = ?, body = ?
-WHERE id = ?
-SQL
+      "UPDATE #{table_name} SET #{placeholders_for_update} WHERE id = ?"
     end
 
     def table_name
@@ -25,44 +21,8 @@ SQL
     end
 
     def all_columns
-      sql = @@db.prepare "SELECT * FROM #{table_name}"
-      sql.columns.map &:to_sym
-    end
-
-    def get_values
-      columns = all_columns
-      columns.delete(:id)
-      columns.delete(:created_at)
-      columns.map { |method| self.send(method) }
-    end
-
-    def get_columns
-      columns = all_columns
-      columns.delete(:id)
-      columns.delete(:created_at)
-      columns
-    end
-
-    def get_values_for_update
-      get_values << send(:id)
-    end
-
-    def get_columns_for_update
-      columns = get_columns
-      columns.map { |column| column.to_s + ' = ?' }.join(", ")
-    end
-
-    def get_columns_for_new
-      columns = all_columns
-      columns.delete(:id)
-      columns.join(", ")
-    end
-
-    def get_values_for_new
-      columns = all_columns
-      columns.delete(:id)
-      attributes = columns
-      attributes.map { |method| self.send(method) }
+      @all_columns ||= @@db.prepare "SELECT * FROM #{table_name}"
+      @all_columns.columns.map &:to_sym
     end
 
     def method_missing(method, *args)
