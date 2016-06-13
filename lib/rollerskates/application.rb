@@ -14,7 +14,7 @@ module Rollerskates
         response.send(route.method_name)
         return response.finish(route.method_name)
       end
-      [404, {}, ['Route not found']]
+      [404, {}, ["Route not found"]]
     end
 
     def mapper
