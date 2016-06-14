@@ -8,6 +8,12 @@ describe 'Todolist App' do
     require "todolist/config/routes.rb"
     TodoApplication
   end
+  #
+  # it 'returns about page' do
+  #   get "/todolist/about"
+  #   expect(last_response).to be_ok
+  #   expect(last_response.body).to eq("Hey Femi")
+  # end
 
   it 'returns a list of all my todos' do
     get '/todolist'
@@ -27,6 +33,14 @@ describe 'Todolist App' do
     post '/todolist'
     expect(last_response).to be_ok
     expect(last_response.body).to eq('Post go swimming')
+  end
+
+  it 'returns a list of all my todos' do
+    get '/todolist'
+    expect(last_response).to be_ok
+    expect(last_response.body).to eq(
+      "['Write a book', 'Build a house', 'Get married', 'Buy a car']"
+    )
   end
 
   it 'can respond to put request' do

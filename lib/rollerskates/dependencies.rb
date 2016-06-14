@@ -1,6 +1,6 @@
 class Object
   def self.const_missing(const)
     require const.to_s.snakize
-    const
+    Object.const_get const
   end
 end

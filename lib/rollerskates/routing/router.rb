@@ -5,7 +5,7 @@ module Rollerskates
         instance_eval &block
       end
 
-      create_routes = Proc.new do |method_name|
+      [:get, :post, :put, :patch, :delete].each do |method_name|
         define_method(method_name) do |path, to:|
           path = "/#{path}" unless path[0] = '/'
           klass_and_method = controller_and_action_for(to)
@@ -17,30 +17,46 @@ module Rollerskates
         end
       end
 
-      [:get, :post, :put, :patch, :delete].each(&create_routes)
-
       def default_actions
     		[
-    			["index", "get"],
-    			["create", "post"],
-    			["show", "get", ":id"],
-    			["destroy", "delete", ":id"],
-    			["update", "put", ":id"],
-          ["update", "patch", ":id"]
+    			{ action: :index,   method: :get,    placeholder: nil,  suffix: nil     },
+    			{ action: :create,  method: :post,   placeholder: nil,  suffix: :create },
+          { action: :new,     method: :get,    placeholder: nil,  suffix: :new    },
+    			{ action: :show,    method: :get,    placeholder: :id,  suffix: nil     },
+          { action: :edit,    method: :get,    placeholder: :id,  suffix: :edit     },
+    			{ action: :destroy, method: :delete, placeholder: :id,  suffix: nil     },
+    			{ action: :update,  method: :put,    placeholder: :id,  suffix: nil     },
+          { action: :update,  method: :patch,  placeholder: :id,  suffix: nil     }
     		]
     	end
 
-    	def resources(controller_name)
-    	  default_actions.each do |value|
-    	  	  path_suffix = "/#{value[2]}" if value[2]
-    	  	  path = "/#{controller_name}#{path_suffix}"
-            action = "#{controller_name}##{value[0]}"
-            send(value[1], path, to: action)
+      def resources_only(*options)
+        default_actions.select do |action:, method:, placeholder:, suffix:|
+          options.include? action
+        end
+      end
+
+      def resources_except(*options)
+        default_actions.reject do |action:, method:, placeholder:, suffix:|
+          options.include? action
+        end
+      end
+
+    	def resources(controller_name, options = {})
+        actions = default_actions
+        actions = resources_only(options[:only]) if options[:only]
+        actions = resources_except(options[:except]) if options[:except]
+    	  actions.each do |action:, method:, placeholder:, suffix:|
+  	  	  suffix = suffix ? "/#{suffix}" : ""
+          placeholder = placeholder ? "/:#{placeholder}" : ""
+  	  	  path = "/#{controller_name}#{placeholder}#{suffix}"
+          action = "#{controller_name}##{action}"
+          send(method, path, to: action)
     	  end
     	end
 
-      def root(to)
-        get '/', to: to
+      def root(location)
+        get '/', to: location
       end
 
       def endpoints
@@ -61,7 +77,7 @@ module Rollerskates
 
       def controller_and_action_for(path_to)
         controller_path, action = path_to.split('#')
-        controller = "#{controller_path.capitalize}Controller"
+        controller = "#{controller_path.camelize}Controller"
         [controller, action.to_sym]
       end
     end
