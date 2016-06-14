@@ -1,11 +1,15 @@
-require 'spec_helper'
+require "spec_helper"
 
-class Rollerskates::Routing::Router
-  attr_reader :route_data
+module Rollerskates
+  module Routing
+    class Router
+      attr_reader :route_data
 
-  def draw(&block)
-    instance_eval(&block)
-    self
+      def draw(&block)
+        instance_eval(&block)
+        self
+      end
+    end
   end
 end
 
@@ -20,15 +24,15 @@ describe Rollerskates::Routing::Router do
     { path: path, pattern: pattern, klass_and_method: [controller, action] }
   end
 
-  context 'endpoints' do
+  context "endpoints" do
     context "get '/photos', to: 'photos#index'" do
       subject do
-        draw { get '/photos', to: 'photos#index' }
+        draw { get "/photos", to: 'photos#index' }
       end
 
-      route_data = { path: '/photos',
+      route_data = { path: "/photos",
                      pattern: [%r{^/photos$}, []],
-                     klass_and_method: ['PhotosController', :index]
+                     klass_and_method: ["PhotosController", :index]
                    }
 
       it { is_expected.to eq route_data }
@@ -36,12 +40,12 @@ describe Rollerskates::Routing::Router do
 
     context "get '/photos/:id', to: 'photos#show'" do
       subject do
-        draw { get '/photos/:id', to: 'photos#show' }
+        draw { get "/photos/:id", to: 'photos#show' }
       end
 
-      route_data = { path: '/photos/:id',
-                     pattern: [%r{^/photos/(?<id>[^/?#]+)$}, ['id']],
-                     klass_and_method: ['PhotosController', :show]
+      route_data = { path: "/photos/:id",
+                     pattern: [%r{^/photos/(?<id>[^/?#]+)$}, ["id"]],
+                     klass_and_method: ["PhotosController", :show]
                    }
 
       it { is_expected.to eq route_data }
@@ -49,27 +53,31 @@ describe Rollerskates::Routing::Router do
 
     context "get '/photos/:id/edit', to: 'photos#edit'" do
       subject do
-        draw { get '/photos/:id/edit', to: 'photos#edit' }
+        draw { get "/photos/:id/edit", to: 'photos#edit' }
       end
 
       regexp = %r{^/photos/(?<id>[^/?#]+)/edit$}
-      route_data = { path: '/photos/:id/edit',
-                     pattern: [regexp, ['id']],
-                     klass_and_method: ['PhotosController', :edit]
+      route_data = { path: "/photos/:id/edit",
+                     pattern: [regexp, ["id"]],
+                     klass_and_method: ["PhotosController", :edit]
                    }
 
       it { is_expected.to eq route_data }
     end
 
-    context "get 'album/:album_id/photos/:photo_id', to: 'photos#album_photo'" do
+    context "get 'album/:album_id/photos/:photo_id',
+      to: 'photos#album_photo'" do
       subject do
-        draw { get '/album/:album_id/photos/:photo_id', to: 'photos#album_photo' }
+        draw do
+          get "/album/:album_id/photos/:photo_id",
+              to: 'photos#album_photo'
+        end
       end
 
       regexp = %r{^/album/(?<album_id>[^/?#]+)/photos/(?<photo_id>[^/?#]+)$}
-      route_data = { path: '/album/:album_id/photos/:photo_id',
+      route_data = { path: "/album/:album_id/photos/:photo_id",
                      pattern: [regexp, %w(album_id photo_id)],
-                     klass_and_method: ['PhotosController', :album_photo]
+                     klass_and_method: ["PhotosController", :album_photo]
                    }
 
       it { is_expected.to eq route_data }

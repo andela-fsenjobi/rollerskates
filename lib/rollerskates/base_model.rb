@@ -20,10 +20,10 @@ module Rollerskates
     def save
       create_columns_placeholders_values
       if id
-        @@db.execute(update_query, values_for_update)
+        database.execute(update_query, values_for_update)
       else
         add_created_at_and_updated_at
-        @@db.execute "INSERT INTO #{table_name} (#{@columns.join(', ')})\
+        database.execute "INSERT INTO #{table_name} (#{@columns.join(', ')})\
           VALUES (#{@placeholders.join(', ')})", @values
       end
     end
@@ -59,28 +59,29 @@ module Rollerskates
     end
 
     def self.all
-      data = @@db.execute "SELECT #{all_columns.join(', ')} FROM #{table_name}"
+      data = database.execute "SELECT #{all_columns.join(', ')}\
+        FROM #{table_name}"
       data.map do |row|
         row_to_object(row)
       end
     end
 
     def self.find(id)
-      data = @@db.execute "SELECT #{all_columns.join(', ')} FROM #{table_name}\
-        WHERE id = ?", id
+      data = database.execute "SELECT #{all_columns.join(', ')}\
+        FROM #{table_name} WHERE id = ?", id
       row_to_object data.flatten
     end
 
     def destroy
-      @@db.execute "DELETE FROM #{table_name} WHERE id = ?", id
+      database.execute "DELETE FROM #{table_name} WHERE id = ?", id
     end
 
     def self.destroy(id)
-      @@db.execute "DELETE FROM #{table_name} WHERE id = ?", id
+      database.execute "DELETE FROM #{table_name} WHERE id = ?", id
     end
 
     def self.destroy_all
-      @@db.execute "DELETE FROM #{table_name}"
+      database.execute "DELETE FROM #{table_name}"
     end
 
     def self.row_to_object(row)

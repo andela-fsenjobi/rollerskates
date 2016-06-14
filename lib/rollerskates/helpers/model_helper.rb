@@ -2,9 +2,11 @@ require "sqlite3"
 
 module Rollerskates
   class ModelHelper
-    class << self; attr_accessor :properties; end
+    class << self; attr_accessor :properties, :db; end
 
-    @@db ||= SQLite3::Database.new File.join("db", "app.db")
+    def database
+      @db ||= SQLite3::Database.new File.join("db", "app.db")
+    end
 
     def add_property(property)
       self.class.properties ||= [
@@ -22,7 +24,7 @@ module Rollerskates
     def self.create_table
       query = "CREATE TABLE IF NOT EXISTS #{table_name}\
               (#{properties.join(', ')})"
-      @@db.execute(query)
+      database.execute(query)
 
       all_columns.each { |var| attr_accessor var }
     end
@@ -75,8 +77,8 @@ module Rollerskates
     end
 
     def all_columns
-      @all_columns ||= @@db.prepare "SELECT * FROM #{table_name}"
-      @all_columns.columns.map &:to_sym
+      @all_columns ||= database.prepare "SELECT * FROM #{table_name}"
+      @all_columns.columns.map(&:to_sym)
     end
 
     def method_missing(method, *args)
