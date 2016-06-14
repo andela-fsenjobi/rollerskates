@@ -1,9 +1,7 @@
 require "erb"
 require "tilt"
-require "pry"
 
 module Rollerskates
-
   class BaseController
     def initialize(env)
       @request ||= env
@@ -14,7 +12,7 @@ module Rollerskates
     end
 
     def redirect_to(path, status: 301)
-      response([], status, { "Location" => path })
+      response([], status, "Location" => path)
     end
 
     def params
@@ -29,13 +27,13 @@ module Rollerskates
       response(render_template(*args))
     end
 
-    def render_template(view_name, locals={})
+    def render_template(view_name, locals = {})
       file_name = File.join("app", "views", controller_name, "#{view_name}.erb")
       template = Tilt.new(file_name)
       template.render self, locals
     end
 
-    def finish(method_name, status = nil)
+    def finish(method_name, _status = nil)
       if get_response
         get_response
       else
