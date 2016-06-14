@@ -7,7 +7,13 @@ module Rollerskates
       @request ||= env
     end
 
-    def response(body = [], status = 200, header = { "Content-type" => "text/html" })
+    def headers
+      {
+        html: { "Content-type" => "text/html" }
+      }
+    end
+
+    def response(body = [], status = 200, header = headers[:html])
       @response = Rack::Response.new(body, status, header)
     end
 
@@ -28,18 +34,15 @@ module Rollerskates
     end
 
     def render_template(view_name, locals = {})
-      file_name = File.join("app", "views", controller_name, "#{view_name}.erb")
+      file_name =
+        File.join(APP_ROOT, "app", "views", controller_name, "#{view_name}.erb")
       template = Tilt.new(file_name)
       template.render self, locals
     end
 
     def finish(method_name, _status = nil)
-      if get_response
-        get_response
-      else
-        render(method_name, locals = {})
-        get_response
-      end
+      render(method_name, {}) unless get_response
+      get_response
     end
 
     def controller_name

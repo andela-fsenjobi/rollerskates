@@ -1,9 +1,7 @@
 AllCops:
   Exclude:
-    - "vendor/**/*"
-    - "db/schema.rb"
     - "bin/*"
-    - "config/environments/*"
+    - "rollerskates.gemspec"
     - "app/assets/*"
   UseCache: false
 Style/CollectionMethods:

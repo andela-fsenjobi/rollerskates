@@ -2,12 +2,12 @@ module Rollerskates
   module Routing
     class Router
       def draw(&block)
-        instance_eval &block
+        instance_eval(&block)
       end
 
       [:get, :post, :put, :patch, :delete].each do |method_name|
-        define_method(method_name) do |path, to:|
-          path = "/#{path}" unless path[0] = '/'
+        define_method(method_name) do |path, to: nil|
+          path = "/#{path}" unless path[0] = "/"
           klass_and_method = controller_and_action_for(to)
           @route_data = { path: path,
                           pattern: pattern_for(path),
@@ -18,45 +18,46 @@ module Rollerskates
       end
 
       def default_actions
-    		[
-    			{ action: :index,   method: :get,    placeholder: nil,  suffix: nil     },
-    			{ action: :create,  method: :post,   placeholder: nil,  suffix: :create },
-          { action: :new,     method: :get,    placeholder: nil,  suffix: :new    },
-    			{ action: :show,    method: :get,    placeholder: :id,  suffix: nil     },
-          { action: :edit,    method: :get,    placeholder: :id,  suffix: :edit     },
-    			{ action: :destroy, method: :delete, placeholder: :id,  suffix: nil     },
-    			{ action: :update,  method: :put,    placeholder: :id,  suffix: nil     },
-          { action: :update,  method: :patch,  placeholder: :id,  suffix: nil     }
-    		]
-    	end
+        [
+          { action: :index,   method: :get },
+          { action: :create,  method: :post },
+          { action: :new,     method: :get, suffix: :new },
+          { action: :show,    method: :get, placeholder: :id },
+          { action: :edit,    method: :get, placeholder: :id, suffix: :edit },
+          { action: :destroy, method: :delete, placeholder: :id },
+          { action: :update,  method: :put,    placeholder: :id },
+          { action: :update,  method: :patch,  placeholder: :id }
+        ]
+      end
 
       def resources_only(*options)
-        default_actions.select do |action:, method:, placeholder:, suffix:|
+        default_actions.select do |action: nil|
           options.include? action
         end
       end
 
       def resources_except(*options)
-        default_actions.reject do |action:, method:, placeholder:, suffix:|
+        default_actions.reject do |action: nil|
           options.include? action
         end
       end
 
-    	def resources(controller_name, options = {})
+      def resources(controller_name, options = {})
         actions = default_actions
         actions = resources_only(options[:only]) if options[:only]
         actions = resources_except(options[:except]) if options[:except]
-    	  actions.each do |action:, method:, placeholder:, suffix:|
-  	  	  suffix = suffix ? "/#{suffix}" : ""
-          placeholder = placeholder ? "/:#{placeholder}" : ""
-  	  	  path = "/#{controller_name}#{placeholder}#{suffix}"
-          action = "#{controller_name}##{action}"
+        actions.each do |hash|
+          method = hash[:method]
+          suffix = hash[:suffix] ? "/#{hash[:suffix]}" : ""
+          placeholder = hash[:placeholder] ? "/:#{hash[:placeholder]}" : ""
+          path = "/#{controller_name}#{placeholder}#{suffix}"
+          action = "#{controller_name}##{hash[:action]}"
           send(method, path, to: action)
-    	  end
-    	end
+        end
+      end
 
       def root(location)
-        get '/', to: location
+        get "/", to: location
       end
 
       def endpoints
@@ -67,7 +68,7 @@ module Rollerskates
 
       def pattern_for(path)
         placeholders = []
-        pattern = "#{path}".gsub!(/(:\w+)/) do |match|
+        pattern = path.to_s.gsub!(/(:\w+)/) do |match|
           placeholders << match[1..-1].freeze
           "(?<#{placeholders.last}>[^/?#]+)"
         end
