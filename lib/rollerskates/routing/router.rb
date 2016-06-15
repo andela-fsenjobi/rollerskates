@@ -7,10 +7,10 @@ module Rollerskates
 
       [:get, :post, :put, :patch, :delete].each do |method_name|
         define_method(method_name) do |path, to: nil|
-          path = "/#{path}" unless path[0] = "/"
+          path = "/#{path}" unless path[0] == "/"
           klass_and_method = controller_and_action_for(to)
           @route_data = { path: path,
-                          pattern: pattern_for(path),
+                          pattern: pattern_for(path.dup),
                           klass_and_method: klass_and_method
                         }
           endpoints[method_name] << @route_data
@@ -31,27 +31,28 @@ module Rollerskates
       end
 
       def resources_only(*options)
-        default_actions.select do |action: nil|
-          options.include? action
+        default_actions.select do |action|
+          options.include? action[:action]
         end
       end
 
       def resources_except(*options)
-        default_actions.reject do |action: nil|
-          options.include? action
+        default_actions.reject do |action|
+          options.include? action[:action]
         end
       end
 
       def resources(controller_name, options = {})
-        actions = default_actions
         actions = resources_only(options[:only]) if options[:only]
-        actions = resources_except(options[:except]) if options[:except]
-        actions.each do |hash|
-          method = hash[:method]
-          suffix = hash[:suffix] ? "/#{hash[:suffix]}" : ""
-          placeholder = hash[:placeholder] ? "/:#{hash[:placeholder]}" : ""
+        actions ||= resources_except(options[:except]) if options[:except]
+        actions ||= default_actions
+
+        actions.each do |routes|
+          method = routes[:method]
+          suffix = routes[:suffix] ? "/#{routes[:suffix]}" : ""
+          placeholder = routes[:placeholder] ? "/:#{routes[:placeholder]}" : ""
           path = "/#{controller_name}#{placeholder}#{suffix}"
-          action = "#{controller_name}##{hash[:action]}"
+          action = "#{controller_name}##{routes[:action]}"
           send(method, path, to: action)
         end
       end

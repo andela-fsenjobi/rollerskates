@@ -43,13 +43,11 @@ module Rollerskates
     end
 
     def self.primary_key(value)
-      return "PRIMARY KEY " if value
-      " "
+      value ? "PRIMARY KEY " : " "
     end
 
     def self.nullable(value)
-      "NOT NULL " unless value
-      "NULL "
+      value ? "NOT NULL " : "NULL "
     end
 
     def self.default(value)
