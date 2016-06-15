@@ -2,7 +2,7 @@ require "spec_helper"
 
 def create_items(n)
   n.times do |i|
-    Item.create({name: "Femi_#{i+1}", status: "Done"})
+    Item.create(name: "Femi_#{i + 1}", status: "Done")
   end
 end
 
@@ -20,7 +20,7 @@ describe "Items" do
 
   describe "#save" do
     it "persists the specified object" do
-      item = Item.new({name: "Femi Senjobi", status: "Done"})
+      item = Item.new(name: "Femi Senjobi", status: "Done")
       item.save
 
       expect(Item.last.name).to eq "Femi Senjobi"
@@ -82,7 +82,7 @@ describe "Items" do
     describe ".destroy_all" do
       it "destroys all the rows in the table" do
         create_items(10)
-        destroy_items = Item.destroy_all
+        Item.destroy_all
 
         expect(Item.count).to eq 0
       end

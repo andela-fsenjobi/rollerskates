@@ -15,7 +15,8 @@ describe "BaseModel" do
 
   describe ".all_columns" do
     it "removes the object with corresponding key from the table" do
-      expect(Item.all_columns).to eq [:id, :created_at, :updated_at, :name, :status]
+      expect(Item.all_columns).to eq
+      [:id, :created_at, :updated_at, :name, :status]
     end
   end
 end

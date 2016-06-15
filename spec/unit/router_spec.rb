@@ -97,7 +97,7 @@ describe Rollerskates::Routing::Router do
 
     context "only :index action of items resources is required" do
       subject do
-        draw { resources :items, only: :index}
+        draw { resources :items, only: :index }
       end
 
       route_data = { path: "/items",
@@ -109,7 +109,7 @@ describe Rollerskates::Routing::Router do
 
     context " only :update action of items resources is excluded" do
       subject do
-        draw { resources :items, except: :update}
+        draw { resources :items, except: :update }
       end
 
       route_data = { path: "/items/:id",

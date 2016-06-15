@@ -76,14 +76,14 @@ module Rollerskates
     end
 
     def self.first
-      data = database.execute "SELECT #{all_columns.join(', ')} FROM #{table_name}\
-        ORDER BY id ASC LIMIT 1"
+      data = database.execute "SELECT #{all_columns.join(', ')} \
+        FROM #{table_name} ORDER BY id ASC LIMIT 1"
       row_to_object(data.flatten)
     end
 
     def self.last
-      data = database.execute "SELECT #{all_columns.join(', ')} FROM #{table_name}\
-        ORDER BY id DESC LIMIT 1"
+      data = database.execute "SELECT #{all_columns.join(', ')} \
+        FROM #{table_name} ORDER BY id DESC LIMIT 1"
       row_to_object(data.flatten)
     end
 
