@@ -30,9 +30,10 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler", "~> 1.11"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
+  spec.add_development_dependency "coveralls"
+
 
   spec.add_runtime_dependency "rack", "~> 1.0"
-  spec.add_runtime_dependency "erubis"
   spec.add_runtime_dependency "tilt"
   spec.add_runtime_dependency "sqlite3"
 end

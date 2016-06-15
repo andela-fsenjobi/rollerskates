@@ -58,12 +58,33 @@ module Rollerskates
       @values << [Time.now.to_s, Time.now.to_s]
     end
 
+    def self.create(values)
+      new(values).save
+    end
+
     def self.all
       data = database.execute "SELECT #{all_columns.join(', ')}\
         FROM #{table_name}"
       data.map do |row|
         row_to_object(row)
       end
+    end
+
+    def self.count
+      data = database.execute "SELECT COUNT(*) FROM #{table_name}"
+      data.flatten.first
+    end
+
+    def self.first
+      data = database.execute "SELECT #{all_columns.join(', ')} \
+        FROM #{table_name} ORDER BY id ASC LIMIT 1"
+      row_to_object(data.flatten)
+    end
+
+    def self.last
+      data = database.execute "SELECT #{all_columns.join(', ')} \
+        FROM #{table_name} ORDER BY id DESC LIMIT 1"
+      row_to_object(data.flatten)
     end
 
     def self.find(id)

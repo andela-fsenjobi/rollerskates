@@ -1,3 +1,6 @@
-source 'https://rubygems.org'
+source "https://rubygems.org"
 
-gem 'rollerskates', path: '../../'
+gem "rollerskates", path: "../../"
+gem "pry"
+gem "sqlite3"
+gem "capybara"

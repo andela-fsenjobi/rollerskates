@@ -1,0 +1,5 @@
+<ul>
+  <% @items.each do |item| %>
+    <li><%= item.name %> - <%= item.status %>  <a href="/items/<%= item.id %>/edit" id="item-edit">EDIT</a> | <form action="/items/<%= item.id %>" method="post" style="display: inline"><input type="hidden" name="_method" value="delete"/><input type="submit" value="DELETE" id="item-delete"/></form></li>
+  <% end %>
+</ul>
