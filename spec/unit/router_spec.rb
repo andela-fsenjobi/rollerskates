@@ -15,8 +15,8 @@ end
 
 describe Rollerskates::Routing::Router do
   def draw(&block)
-    router = Rollerskates::Routing::Router.new
-    router.draw(&block).route_data
+    @router = Rollerskates::Routing::Router.new
+    @router.draw(&block).route_data
   end
 
   def route(regexp, placeholders, controller, action, path)
@@ -80,6 +80,42 @@ describe Rollerskates::Routing::Router do
                      klass_and_method: ["PhotosController", :album_photo]
                    }
 
+      it { is_expected.to eq route_data }
+    end
+
+    context "resources :items" do
+      subject do
+        draw { resources :items }
+      end
+
+      route_data = { path: "/items/:id",
+                     pattern: [%r{^/items/(?<id>[^/?#]+)$}, ["id"]],
+                     klass_and_method: ["ItemsController", :update]
+                   }
+      it { is_expected.to eq route_data }
+    end
+
+    context "only :index action of items resources is required" do
+      subject do
+        draw { resources :items, only: :index}
+      end
+
+      route_data = { path: "/items",
+                     pattern: [%r{^/items$}, []],
+                     klass_and_method: ["ItemsController", :index]
+                   }
+      it { is_expected.to eq route_data }
+    end
+
+    context " only :update action of items resources is excluded" do
+      subject do
+        draw { resources :items, except: :update}
+      end
+
+      route_data = { path: "/items/:id",
+                     pattern: [%r{^/items/(?<id>[^/?#]+)$}, ["id"]],
+                     klass_and_method: ["ItemsController", :destroy]
+                   }
       it { is_expected.to eq route_data }
     end
   end

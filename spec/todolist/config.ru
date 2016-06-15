@@ -1,4 +1,6 @@
-require './config/application.rb'
+APP_ROOT = __dir__
+require APP_ROOT + "/config/application.rb"
 TodoApplication = Todolist::Application.new
-require "./config/routes.rb"
+use Rack::MethodOverride
+require APP_ROOT + "/config/routes.rb"
 run TodoApplication
