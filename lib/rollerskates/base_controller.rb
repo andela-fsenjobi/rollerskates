@@ -3,8 +3,8 @@ require "tilt"
 
 module Rollerskates
   class BaseController
-    def initialize(env)
-      @request ||= env
+    def initialize(request)
+      @request ||= request
     end
 
     def headers

@@ -1,4 +1,4 @@
-# Rollerskates [![Code Climate](https://codeclimate.com/github/andela-fsenjobi/rollerskates/badges/gpa.svg)](https://codeclimate.com/github/andela-fsenjobi/rollerskates) [![CircleCI](https://circleci.com/gh/andela-fsenjobi/rollerskates.svg?style=svg)](https://circleci.com/gh/andela-fsenjobi/rollerskates) [![Coverage Status](https://coveralls.io/repos/github/andela-fsenjobi/rollerskates/badge.svg?branch=master)](https://coveralls.io/github/andela-fsenjobi/rollerskates?branch=master)
+# Rollerskates [![Code Climate](https://codeclimate.com/github/andela-fsenjobi/rollerskates/badges/gpa.svg)](https://codeclimate.com/github/andela-fsenjobi/rollerskates) [![Build Status](https://semaphoreci.com/api/v1/femisenjobi/rollerskates/branches/master/badge.svg)](https://semaphoreci.com/femisenjobi/rollerskates) [![Coverage Status](https://coveralls.io/repos/github/andela-fsenjobi/rollerskates/badge.svg?branch=master)](https://coveralls.io/github/andela-fsenjobi/rollerskates?branch=master)
 
 You all have heard about rails, right? (obviously). Rails is a gigantic framework capable of supporting massive projects. Like its name, it can support massive trains (trains) with tons of weight (requirements). Here is rollerskates, a micro MVC built with ruby and is just capable of getting you from here to there.
 
@@ -40,15 +40,27 @@ app_name
 └───config.ru
 ```
 
+### Application.rb
+Set up your application this way:
+
+```ruby
+require 'rollerskates'
+
+module Todolist
+	class Application < Rollerskates::Application
+	end
+end
+```
+Allow your application class to inherit form `Rollerskates::Application` class
+
 ### Config.ru
 Set up your routes this way:
 
 ```ruby
-APP_ROOT = __dir__
-require APP_ROOT + "/config/application.rb"
+require "/config/application.rb"
 TodoApplication = Todolist::Application.new
 use Rack::MethodOverride
-require APP_ROOT + "/config/routes.rb"
+require "/config/routes.rb"
 run TodoApplication
 ```
 
@@ -99,13 +111,12 @@ Rolletskates automatically adds the `id, created_at and updated_at` fields and t
 ### Views
 
 ```
-...
 │   
 └───views
 |   └───items
 |       |____ new.erb
 |       |____ show.erb
-...
+
 ```
 Files in the view folder should be organized according to the controller and action name.
 ## Testing
