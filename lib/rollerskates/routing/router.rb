@@ -30,6 +30,12 @@ module Rollerskates
         ]
       end
 
+      def actions(options = {})
+        return resources_only(options[:only]) if options[:only]
+        return resources_except(options[:except]) if options[:except]
+        default_actions
+      end
+
       def resources_only(*options)
         default_actions.select do |action|
           options.include? action[:action]
@@ -42,17 +48,19 @@ module Rollerskates
         end
       end
 
-      def resources(controller_name, options = {})
-        actions = resources_only(options[:only]) if options[:only]
-        actions ||= resources_except(options[:except]) if options[:except]
-        actions ||= default_actions
+      def method_path_to(route, controller_name)
+        suffix = route[:suffix] ? "/#{route[:suffix]}" : ""
+        placeholder = route[:placeholder] ? "/:#{route[:placeholder]}" : ""
+        [
+          route[:method],
+          "/#{controller_name}#{placeholder}#{suffix}",
+          "#{controller_name}##{route[:action]}"
+        ]
+      end
 
-        actions.each do |routes|
-          method = routes[:method]
-          suffix = routes[:suffix] ? "/#{routes[:suffix]}" : ""
-          placeholder = routes[:placeholder] ? "/:#{routes[:placeholder]}" : ""
-          path = "/#{controller_name}#{placeholder}#{suffix}"
-          action = "#{controller_name}##{routes[:action]}"
+      def resources(controller_name, options = {})
+        actions(options).each do |route|
+          method, path, action = method_path_to(route, controller_name)
           send(method, path, to: action)
         end
       end

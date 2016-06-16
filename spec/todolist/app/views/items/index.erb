@@ -1,5 +1,19 @@
-<ul>
-  <% @items.each do |item| %>
-    <li><%= item.name %> - <%= item.status %>  <a href="/items/<%= item.id %>/edit" id="item-edit">EDIT</a> | <form action="/items/<%= item.id %>" method="post" style="display: inline"><input type="hidden" name="_method" value="delete"/><input type="submit" value="DELETE" id="item-delete"/></form></li>
-  <% end %>
-</ul>
+<div class="container">
+  <div class="row">
+    <h5>All Items</h5>
+      <% @items.each do |item| %>
+        <div class="col s12 m4">
+          <div class="card teal">
+            <div class="card-content white-text">
+              <span class="card-title"><%= item.name %></span>
+              <p><%= item.status %></p>
+            </div>
+            <div class="card-action">
+              <a href="/items/<%= item.id %>/edit" id="item-edit">Edit</a>
+              <form action="/items/<%= item.id %>" method="post" style="display: inline" class="right"><input type="hidden" name="_method" value="delete"/><input type="submit" value="DELETE" id="item-delete" class="btn red"/></form>
+            </div>
+          </div>
+        </div>
+      <% end %>
+  </div>
+</div>

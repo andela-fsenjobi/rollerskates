@@ -1,8 +1,17 @@
-<h1>Edit Item</h2>
-
-<form action="/items/<%= @item.id %>" method="post">
-  <input type="hidden" name="_method" value="put" ><br>
-  <input type="text" name="items[name]" value="<%= @item.name %>" id="item-name"><br>
-  <input type="text" name="items[status]" value="<%= @item.status %>" id="item-status"><br>
-  <input type="submit" value="Update" id="item-submit"/>
-</form>
+<div class="row">
+  <div class="col l6 offset-l3">
+    <h5>Edit Item</h5>
+    <form action="/items/<%= @item.id %>" name="items" method="post">
+      <input type="hidden" name="_method" value="put" >
+      <div class="input-field">
+        <input name="items[name]" value="<%= @item.name %>" id="item-name" class="validate">
+        <label class="active" id="item-name">Item Name</label>
+      </div>
+      <div class="input-field">
+        <input name="items[status]" value="<%= @item.status %>" id="item-status" class="validate">
+        <label class="active" id="item-name">Status</label>
+      </div>
+      <input type="submit" class="btn" id="item-submit"/>
+    </form>
+  </div>
+</div>

@@ -8,12 +8,10 @@ module Rollerskates
     end
 
     def headers
-      {
-        html: { "Content-type" => "text/html" }
-      }
+      { "Content-type" => "text/html" }
     end
 
-    def response(body = [], status = 200, header = headers[:html])
+    def response(body = [], status = 200, header = headers)
       @response = Rack::Response.new(body, status, header)
     end
 
@@ -33,11 +31,13 @@ module Rollerskates
       response(render_template(*args))
     end
 
-    def render_template(view_name, locals = {})
-      file_name =
-        File.join(APP_ROOT, "app", "views", controller_name, "#{view_name}.erb")
+    def render_template(view_name, _locals = {})
+      views_folder = [APP_ROOT, "app", "views"].join("/")
+      file_name = File.join(views_folder, controller_name, "#{view_name}.erb")
+      layout_name = File.join(views_folder, "layouts", "application.erb")
+      layout = Tilt.new(layout_name)
       template = Tilt.new(file_name)
-      template.render self, locals
+      layout.render(self) { template.render(self) }
     end
 
     def finish(method_name, _status = nil)
