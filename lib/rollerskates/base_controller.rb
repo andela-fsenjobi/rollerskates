@@ -17,8 +17,8 @@ module Rollerskates
       @response = Rack::Response.new(body, status, header)
     end
 
-    def redirect_to(path, status: 301)
-      response([], status, "Location" => path)
+    def redirect_to(path, status)
+      response([], status[:status], "Location" => path)
     end
 
     def params

@@ -6,9 +6,9 @@ module Rollerskates
       end
 
       [:get, :post, :put, :patch, :delete].each do |method_name|
-        define_method(method_name) do |path, to: nil|
+        define_method(method_name) do |path, options|
           path = "/#{path}" unless path[0] == "/"
-          klass_and_method = controller_and_action_for(to)
+          klass_and_method = controller_and_action_for(options[:to])
           @route_data = { path: path,
                           pattern: pattern_for(path.dup),
                           klass_and_method: klass_and_method

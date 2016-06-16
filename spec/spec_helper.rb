@@ -4,7 +4,6 @@ Coveralls.wear!
 $LOAD_PATH.unshift File.expand_path("../../lib", __FILE__)
 require "todolist/config/application"
 require "rspec"
-require "capybara"
 
 RSpec.shared_context type: :feature do
   require "capybara/rspec"
