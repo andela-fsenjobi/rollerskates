@@ -1,0 +1,14 @@
+<div class="container">
+  <div class="row">
+    <div class="col l8 offset-l2">
+      <h1>Edit Post</h2>
+
+      <form action="/posts/<%= @post.id %>" method="post">
+        <input type="hidden" name="_method" value="put"><br>
+        <input type="text" name="posts[title]" value="<%= @post.title %>"><br>
+        <textarea name="posts[description]"><%= @post.description %></textarea><br>
+        <input type="submit" value="Update"/>
+      </form>
+    </div>
+  </div>
+</div>

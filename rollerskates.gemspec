@@ -35,5 +35,7 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency "rack", "~> 1.0"
   spec.add_runtime_dependency "tilt", "~> 0"
-  spec.add_runtime_dependency "sqlite3", "~> 0"
+  spec.add_runtime_dependency "pry", "~> 0"
+  spec.add_runtime_dependency "sqlite3", "~> 1.3.11"
+
 end

@@ -1,0 +1,29 @@
+<% require "pry" %>
+<div class="container">
+  <div class="row">
+    <div class="col l8 offset-l2">
+      <h3><%= @post.title %></h3>
+      <div class="flow-text"><%= @post.description %></div>
+      <h6>Comments</h6>
+      <% require "pry"; binding.pry %>
+      <hr>
+      <ul>
+        <% @post.comments.each do |comment| %>
+          <li>
+            <%= comment.name %> <br>
+            <%= comment.message %> <br>
+            <a href="/comments/<%= comment.id %>/edit">EDIT</a> | <form action="/comments/<%= comment.id %>" method="comment" style="display: inline"><input type="hidden" name="_method" value="delete"/><input type="submit" value="DELETE"/></form></li>
+        <% end %>
+      </ul>
+
+      <h5>New Comment</h5>
+
+      <form action="/comments" name="comments" method="post">
+        <input type="text" name="comments[name]"><br>
+        <textarea name="comments[message]"></textarea><br>
+        <input type="hidden" name="comments[post_id]" value="<%= @post.id %>"/><br>
+        <input type="submit"/>
+      </form>
+    </div>
+  </div>
+</div>

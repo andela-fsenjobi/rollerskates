@@ -1,8 +1,0 @@
-<h1>Edit Todo</h2>
-
-<form action="/lists/<%= @list.id %>" method="post">
-  <input type="hidden" name="_method" value="put"><br>
-  <input type="text" name="lists[title]" value="<%= @list.title %>"><br>
-  <textarea name="lists[description]"><%= @list.description %></textarea><br>
-  <input type="submit" value="Update"/>
-</form>
