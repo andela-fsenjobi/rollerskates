@@ -64,8 +64,7 @@ module Rollerskates
     end
 
     def self.all
-      data = database.execute "SELECT #{all_columns.join(', ')}\
-        FROM #{table_name}"
+      data = database.execute "SELECT * FROM #{table_name}"
       data.map do |row|
         row_to_object(row)
       end
@@ -77,20 +76,19 @@ module Rollerskates
     end
 
     def self.first
-      data = database.execute "SELECT #{all_columns.join(', ')} \
-        FROM #{table_name} ORDER BY id ASC LIMIT 1"
+      data = database.execute "SELECT * FROM #{table_name}\
+        ORDER BY id ASC LIMIT 1"
       row_to_object(data.flatten)
     end
 
     def self.last
-      data = database.execute "SELECT #{all_columns.join(', ')} \
-        FROM #{table_name} ORDER BY id DESC LIMIT 1"
+      data = database.execute "SELECT * FROM #{table_name}\
+        ORDER BY id DESC LIMIT 1"
       row_to_object(data.flatten)
     end
 
     def self.find(id)
-      data = database.execute "SELECT #{all_columns.join(', ')}\
-        FROM #{table_name} WHERE id = ?", id
+      data = database.execute "SELECT * FROM #{table_name} WHERE id = ?", id
       row_to_object data.flatten
     end
 
