@@ -36,7 +36,7 @@ app_name
 |    └─── routes.rb
 |    └───application.rb
 └───db
-|    └───development.sqlite3
+|    └───app.db
 └───config.ru
 ```
 
@@ -57,10 +57,13 @@ Allow your application class to inherit form `Rollerskates::Application` class
 Set up your routes this way:
 
 ```ruby
-require "/config/application.rb"
+APP_ROOT = __dir__
+require_relative "./config/application.rb"
 TodoApplication = Todolist::Application.new
+use Rack::Reloader, 0
 use Rack::MethodOverride
-require "/config/routes.rb"
+require_relative "./config/routes.rb"
+use Rack::Static, urls: ["/css", "/js", "/fonts"], root: "/app/assets"
 run TodoApplication
 ```
 
