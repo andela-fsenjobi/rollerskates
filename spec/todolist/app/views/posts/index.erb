@@ -1,11 +1,15 @@
 <div class="container">
   <div class="row">
     <div class="col l8 offset-l2">
-      <ul>
-        <% @posts.each do |post| %>
-          <li><%= post.title %> - <a href="/posts/<%= post.id %>">View</a> | <a href="/posts/<%= post.id %>/edit">EDIT</a> | <form action="/posts/<%= post.id %>" method="post" style="display: inline"><input type="hidden" name="_method" value="delete"/><input type="submit" value="DELETE"/></form></li>
-        <% end %>
-      </ul>
+      <h3>Blog Posts</h3>
+      <% @posts.each do |post| %>
+        <h4><a href="/posts/<%= post.id %>"><%= post.title %></a>
+          <span class="right valign-center">
+            <a href="/posts/<%= post.id %>/edit"><i class="material-icons">edit</i></a>
+            <form action="/posts/<%= post.id %>" method="post" style="display: inline"><input type="hidden" name="_method" value="delete"/><button type="submit" style="background-color: rgba(255,255,255, 0); border: 0px; padding: 0px;"><i class="material-icons">delete</i></button></form>
+          </span>
+        </h4>
+      <% end %>
     </div>
   </div>
 </div>

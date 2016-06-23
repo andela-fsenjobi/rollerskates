@@ -1,12 +1,18 @@
 <div class="container">
   <div class="row">
     <div class="col l8 offset-l2">
-      <h1>New Post</h2>
+      <h3>New Post</h3>
 
       <form action="/posts" name="posts" method="post">
-        <input type="text" name="posts[title]"><br>
-        <textarea name="posts[description]"></textarea><br>
-        <input type="submit"/>
+        <div class="input-field">
+          <label class="active">Post Title</label>
+          <input type="text" name="posts[title]">
+        </div>
+        <div class="input-field">
+          <label class="active">Post Body</label>
+          <textarea name="posts[description]" class="materialize-textarea"></textarea>
+        </div>
+        <input type="submit" class="btn" value="Publish"/>
       </form>
     </div>
   </div>

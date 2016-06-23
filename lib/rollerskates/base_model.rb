@@ -1,4 +1,5 @@
-require "rollerskates/helpers/model_helper"
+require "rollerskates/orm/helpers/model_helper"
+require "rollerskates/orm/model_associations"
 
 module Rollerskates
   class BaseModel < Rollerskates::ModelHelper
