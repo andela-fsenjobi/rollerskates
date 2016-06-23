@@ -77,7 +77,7 @@ module Rollerskates
     end
 
     def all_columns
-      @all_columns ||= database.prepare "SELECT * FROM #{table_name}"
+      @all_columns = database.prepare "SELECT * FROM #{table_name}"
       @all_columns.columns.map(&:to_sym)
     end
 

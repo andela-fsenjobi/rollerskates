@@ -60,7 +60,6 @@ Style/PredicateName:
   Enabled: true
   NamePrefix:
   - is_
-  - has_
   - have_
   NamePrefixBlacklist:
   - is_

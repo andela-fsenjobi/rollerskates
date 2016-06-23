@@ -1,0 +1,19 @@
+<div class="container">
+  <div class="row">
+    <div class="col l8 offset-l2">
+      <h3>New Post</h3>
+
+      <form action="/posts" name="posts" method="post">
+        <div class="input-field">
+          <label class="active">Post Title</label>
+          <input type="text" name="posts[title]">
+        </div>
+        <div class="input-field">
+          <label class="active">Post Body</label>
+          <textarea name="posts[description]" class="materialize-textarea"></textarea>
+        </div>
+        <input type="submit" class="btn" value="Publish"/>
+      </form>
+    </div>
+  </div>
+</div>

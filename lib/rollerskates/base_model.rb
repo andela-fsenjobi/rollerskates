@@ -1,4 +1,5 @@
-require "rollerskates/helpers/model_helper"
+require "rollerskates/orm/helpers/model_helper"
+require "rollerskates/orm/model_associations"
 
 module Rollerskates
   class BaseModel < Rollerskates::ModelHelper
@@ -105,12 +106,12 @@ module Rollerskates
       database.execute "DELETE FROM #{table_name}"
     end
 
-    def self.row_to_object(row)
-      model = model_name.new
-      all_columns.each_with_index do |attribute, index|
-        model.send("#{attribute}=", row[index])
+    def self.row_to_object(row, model = model_name)
+      object = model.new
+      model.all_columns.each_with_index do |attribute, index|
+        object.send("#{attribute}=", row[index])
       end
-      model
+      object
     end
   end
 end

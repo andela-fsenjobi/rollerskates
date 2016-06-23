@@ -36,7 +36,7 @@ app_name
 |    └─── routes.rb
 |    └───application.rb
 └───db
-|    └───development.sqlite3
+|    └───app.db
 └───config.ru
 ```
 
@@ -57,10 +57,13 @@ Allow your application class to inherit form `Rollerskates::Application` class
 Set up your routes this way:
 
 ```ruby
-require "/config/application.rb"
+APP_ROOT = __dir__
+require_relative "./config/application.rb"
 TodoApplication = Todolist::Application.new
+use Rack::Reloader, 0
 use Rack::MethodOverride
-require "/config/routes.rb"
+require_relative "./config/routes.rb"
+use Rack::Static, urls: ["/css", "/js", "/fonts"], root: "/app/assets"
 run TodoApplication
 ```
 
@@ -104,9 +107,15 @@ class Item < Rollerskates::BaseRecord
   property :status, type: :boolean, nullable: false
 
   create_table
+  belongs_to :user
+  has_many :product
 end
 ```
 Rolletskates automatically adds the `id, created_at and updated_at` fields and thus need not to be specified in the model. Other properties, however should be specified as above.
+
+You can make use of associations with the rollerskates framework.
+
+NB: Unlike Rails, `Rollerskates` uses sigular expression for both `has_many` and `belongs_to`
 
 ### Views
 
@@ -116,9 +125,13 @@ Rolletskates automatically adds the `id, created_at and updated_at` fields and t
 |   └───items
 |       |____ new.erb
 |       |____ show.erb
+|───────layouts
+|       |____ application.erb
 
 ```
-Files in the view folder should be organized according to the controller and action name.
+Files in the view folder should be organized according to the controller and action name. Instance variables declared in the respective controller action are available to your view.
+
+The views make use of a layouts. You can abstract common elements in all your views to the `views/layouts/application.erb` file.
 ## Testing
 
 The tests could be run automatically by using

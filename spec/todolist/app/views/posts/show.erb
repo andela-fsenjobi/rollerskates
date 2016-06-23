@@ -1,0 +1,46 @@
+<% require "pry" %>
+<div class="container">
+  <div class="row">
+    <div class="col l8 offset-l2">
+      <h3><%= @post.title %>
+        <span class="right valign-center">
+          <a href="/posts/<%= @post.id %>/edit"><i class="material-icons">edit</i></a>
+          <form action="/posts/<%= @post.id %>" method="post" style="display: inline"><input type="hidden" name="_method" value="delete"/><button type="submit" style="background-color: rgba(255,255,255, 0); border: 0px; padding: 0px;"><i class="material-icons">delete</i></button></form>
+        </span>
+      </h3>
+      <div class="flow-text"><%= @post.description %></div>
+<hr />
+      <div class="row">
+        <h6>Comments</h6>
+        <div class="col l12">
+          <% @post.comments.each do |comment| %>
+            <div class="card-panel teal">
+              <div class="right"><form action="/comments/<%= comment.id %>" method="post" style="display: inline"><input type="hidden" name="_method" value="delete"/><button type="submit" style="background-color: rgba(255,255,255, 0); border: 0px; padding: 0px;"><i class="material-icons">delete</i></button></form></div>
+              <div class="white-text"><%= comment.message %></div>
+              <div class="white-text right">- <%= comment.name %></div>
+            </div>
+          <% end %>
+        </div>
+      </div>
+
+    <div class="container">
+      <div class="row">
+        <h5>New Comment</h5>
+          <form action="/comments" name="comments" method="post">
+            <div class="input-field">
+              <label class="active">Comment</label>
+              <textarea name="comments[message]" class="materialize-textarea"></textarea>
+            </div>
+            <div class="input-field">
+              <label class="active">Name</label>
+              <input type="text" name="comments[name]">
+            </div>
+            <input type="hidden" name="comments[post_id]" value="<%= @post.id %>"/><br>
+
+            <input type="submit" class="btn"/>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

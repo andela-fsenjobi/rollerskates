@@ -1,0 +1,20 @@
+<div class="container">
+  <div class="row">
+    <div class="col l8 offset-l2">
+      <h1>Edit Post</h2>
+
+      <form action="/posts/<%= @post.id %>" method="post">
+        <input type="hidden" name="_method" value="put">
+        <div class="input-field">
+          <label class="active">Post Title</label>
+          <input type="text" name="posts[title]" value="<%= @post.title %>"><br>
+        </div>
+        <div class="input-field">
+          <label class="active">Post Body</label>
+          <textarea name="posts[description]" class="materialize-textarea"><%= @post.description %></textarea>
+        </div>
+        <input type="submit" class="btn" value="Update"/>
+      </form>
+    </div>
+  </div>
+</div>
