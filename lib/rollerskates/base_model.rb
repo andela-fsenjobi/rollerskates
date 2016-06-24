@@ -1,8 +1,48 @@
 require "rollerskates/orm/helpers/model_helper"
 require "rollerskates/orm/model_associations"
+require "rollerskates/orm/query_builder"
 
 module Rollerskates
   class BaseModel < Rollerskates::ModelHelper
+    class << self; attr_accessor :query, :result, :values; end
+    def self.select(*columns)
+      query.select(columns)
+    end
+
+    def self.limit(value)
+      query.limit(value)
+    end
+
+    def self.where(value)
+      query.where(value)
+    end
+
+    def self.find(value)
+      query.find_by(id: value).limit(1)
+    end
+
+    def self.find_by(value)
+      key = value.keys.first
+      value = value.values.first
+      query.find_by(key => value).limit(1)
+    end
+
+    def self.first(number = nil)
+      query.first(number)
+    end
+
+    def self.last(number = 1)
+      query.order("id DESC").first(number)
+    end
+
+    def self.all
+      query
+    end
+
+    def self.query
+      @query = Rollerskates::QueryBuilder.new self
+    end
+
     def initialize(values = {})
       hash_to_properties(values) unless values.empty?
     end
@@ -13,83 +53,49 @@ module Rollerskates
       end
     end
 
-    def update(hash)
-      hash_to_properties(hash)
-      @updated_at = Time.now.to_s
-    end
-
+    # def update(hash)
+    #   hash_to_properties(hash)
+    #   @updated_at = Time.now.to_s
+    # end
+    #
     def save
-      create_columns_placeholders_values
-      if id
-        database.execute(update_query, values_for_update)
+      self.class.query.build(to_hash).save
+    end
+
+    def to_hash
+      object_hash = {}
+      instance_variables.each do |property|
+        object_hash[property[1..-1].to_sym] = instance_variable_get("#{property}")
+      end
+      object_hash
+    end
+
+    def self.create(create_parameters)
+      query.build(create_parameters).save
+    end
+
+    class << self
+      attr_reader :result
+    end
+
+    def self.get_result
+      @result = database.execute query.query, values
+      get_data
+    end
+
+    def self.get_data
+      if result.length > 1
+        result.map { |row| row_to_object(row) }
       else
-        add_created_at_and_updated_at
-        database.execute "INSERT INTO #{table_name} (#{@columns.join(', ')})\
-          VALUES (#{@placeholders.join(', ')})", @values
+        row_to_object(result)
       end
     end
 
-    def placeholders_for_update
-      placeholders = @columns.map { |col| col + " = ?" }
-      placeholders.join(", ")
-    end
-
-    def values_for_update
-      @values << id
-    end
-
-    def create_columns_placeholders_values
-      @model = self
-      @columns = []
-      @placeholders = []
-      @values = []
-
-      all_columns.each do |column|
-        value = @model.send(column)
-        next unless value
-        @columns << column.to_s
-        @placeholders << "?"
-        @values << value
-      end
-    end
-
-    def add_created_at_and_updated_at
-      @columns << %w(created_at updated_at)
-      @placeholders << ["?", "?"]
-      @values << [Time.now.to_s, Time.now.to_s]
-    end
-
-    def self.create(values)
-      new(values).save
-    end
-
-    def self.all
-      data = database.execute "SELECT * FROM #{table_name}"
-      data.map do |row|
-        row_to_object(row)
-      end
-    end
-
-    def self.count
-      data = database.execute "SELECT COUNT(*) FROM #{table_name}"
-      data.flatten.first
-    end
-
-    def self.first
-      data = database.execute "SELECT * FROM #{table_name}\
-        ORDER BY id ASC LIMIT 1"
-      row_to_object(data.flatten)
-    end
-
-    def self.last
-      data = database.execute "SELECT * FROM #{table_name}\
-        ORDER BY id DESC LIMIT 1"
-      row_to_object(data.flatten)
-    end
-
-    def self.find(id)
-      data = database.execute "SELECT * FROM #{table_name} WHERE id = ?", id
-      row_to_object data.flatten
+    def self.method_missing(method, *args, &block)
+      my_methods = [:database, :table_name, :model_name]
+      return new.send(method, *args) if my_methods.include? method
+      get_result unless result.respond_to? method
+      result.send(method, args, block)
     end
 
     def destroy
