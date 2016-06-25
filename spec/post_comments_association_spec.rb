@@ -32,15 +32,16 @@ describe "Posts" do
 
   describe "#comments" do
     context "when post has 2 associated comment" do
-      it "return count of zero for comments" do
+      it "return count of 2 for comments" do
         create_posts(1)
         post = Post.first
         create_comments(2, post.id)
         comments = post.comments
 
         expect(comments.size).to eq 2
-        expect(comments.first).to be_a Comment
-        expect(comments.first.post_id).to eq post.id
+        comments.each do |comment|
+          expect(comment.post_id).to eq post.id
+        end
       end
     end
   end
@@ -60,7 +61,6 @@ describe "Comment" do
         create_comments(1, post.id)
         comment = Comment.first
 
-        expect(comment.post).to be_a Post
         expect(comment.post_id).to eq post.id
         expect(comment.post.title).to eq post.title
       end

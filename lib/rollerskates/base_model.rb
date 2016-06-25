@@ -31,12 +31,24 @@ module Rollerskates
       query.first(number)
     end
 
-    def self.last(number = 1)
+    def self.last(number = nil)
       query.order("id DESC").first(number)
     end
 
     def self.all
       query
+    end
+
+    def self.destroy(id)
+      query.destroy(id)
+    end
+
+    def self.destroy_all
+      query.destroy_all
+    end
+
+    def self.count
+      query.count
     end
 
     def self.query
@@ -53,11 +65,6 @@ module Rollerskates
       end
     end
 
-    # def update(hash)
-    #   hash_to_properties(hash)
-    #   @updated_at = Time.now.to_s
-    # end
-    #
     def save
       self.class.query.build(to_hash).save
     end
@@ -65,57 +72,14 @@ module Rollerskates
     def to_hash
       object_hash = {}
       instance_variables.each do |property|
-        object_hash[property[1..-1].to_sym] = instance_variable_get("#{property}")
+        object_hash[property[1..-1].to_sym] =
+          instance_variable_get(property.to_s)
       end
       object_hash
     end
 
     def self.create(create_parameters)
       query.build(create_parameters).save
-    end
-
-    class << self
-      attr_reader :result
-    end
-
-    def self.get_result
-      @result = database.execute query.query, values
-      get_data
-    end
-
-    def self.get_data
-      if result.length > 1
-        result.map { |row| row_to_object(row) }
-      else
-        row_to_object(result)
-      end
-    end
-
-    def self.method_missing(method, *args, &block)
-      my_methods = [:database, :table_name, :model_name]
-      return new.send(method, *args) if my_methods.include? method
-      get_result unless result.respond_to? method
-      result.send(method, args, block)
-    end
-
-    def destroy
-      database.execute "DELETE FROM #{table_name} WHERE id = ?", id
-    end
-
-    def self.destroy(id)
-      database.execute "DELETE FROM #{table_name} WHERE id = ?", id
-    end
-
-    def self.destroy_all
-      database.execute "DELETE FROM #{table_name}"
-    end
-
-    def self.row_to_object(row, model = model_name)
-      object = model.new
-      model.all_columns.each_with_index do |attribute, index|
-        object.send("#{attribute}=", row[index])
-      end
-      object
     end
   end
 end

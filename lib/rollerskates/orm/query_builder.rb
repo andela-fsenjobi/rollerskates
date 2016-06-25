@@ -8,6 +8,14 @@ module Rollerskates
       @type = :collection
     end
 
+    def table_name
+      @model.table_name
+    end
+
+    def database
+      @model.database
+    end
+
     def select(*select_conditions)
       @select = select_conditions
       self
@@ -23,9 +31,9 @@ module Rollerskates
       where find_conditions
     end
 
-    def first(number)
-      @type = :object if number
-      limit number
+    def first(number = nil)
+      @type = :object unless number
+      number ? limit(number) : limit(1)
     end
 
     def limit(limit_condition = nil)
@@ -43,6 +51,12 @@ module Rollerskates
       self
     end
 
+    def count
+      @count = true
+      execute
+      @result.flatten[0].to_i
+    end
+
     def query_statement
       sql = "#{select_phrase} #{from_phrase}"
       sql  << where_phrase unless @columns.empty?
@@ -53,41 +67,49 @@ module Rollerskates
       sql
     end
 
-    def query
-      @query
-    end
+    attr_reader :query
 
     def update(update_parameters)
       @update_parameters = update_parameters
-      @query = "UPDATE #{@model.table_name} SET \
+      @query = "UPDATE #{table_name} SET \
         #{update_values.join(', ')} WHERE id = #{id}"
       self
     end
 
     def build(create_parameters)
       @create_parameters = create_parameters
-      @query = "INSERT INTO #{@model.table_name} (#{create_columns})\
+      @query = "INSERT INTO #{table_name} (#{create_columns})\
         VALUES (#{create_values})"
+      self
+    end
+
+    def destroy(item_id = nil)
+      index = item_id ? item_id : id
+      @query = "DELETE FROM #{table_name} WHERE id = #{index}"
+      execute
+      self
+    end
+
+    def destroy_all
+      @query = "DELETE FROM #{table_name}"
+      execute
       self
     end
 
     def create_columns
       @create_parameters[:created_at] = Time.now.to_s
       @create_parameters[:updated_at] = Time.now.to_s
-      @create_parameters.keys.map{ |column| "'#{column}'" }.join(", ")
+      @create_parameters.keys.map { |column| "'#{column}'" }.join(", ")
     end
 
     def create_values
-      @create_parameters.values.map{ |value| "'#{value}'" }.join(", ")
+      @create_parameters.values.map { |value| "'#{value}'" }.join(", ")
     end
 
     def save
+      @type = :object
       execute
       data
-    end
-
-    def reset_result
-      @result = ""
     end
 
     def update_values
@@ -96,11 +118,17 @@ module Rollerskates
     end
 
     def select_phrase
-      @select ? "SELECT #{@select.flatten.join(', ')} " : "SELECT * "
+      if @count
+        "SELECT COUNT (*)"
+      elsif @select
+        "SELECT #{@select.flatten.join(', ')} "
+      else
+        "SELECT * "
+      end
     end
 
     def from_phrase
-      "FROM #{@model.table_name}"
+      "FROM #{table_name}"
     end
 
     def where_phrase
@@ -125,15 +153,15 @@ module Rollerskates
 
     def execute
       sql = query ? query : query_statement
-      @result = @model.database.execute sql
+      @result = database.execute sql
     end
 
     def data
       execute unless @result
       @data ||= if @type == :collection
-                  @result.map { |row| @model.row_to_object(row) }
+                  @result.map { |row| row_to_object(row) }
                 elsif @type == :object
-                  @model.row_to_object(@result.flatten)
+                  row_to_object(@result.flatten)
                 end
     end
 
@@ -143,6 +171,19 @@ module Rollerskates
         return true
       end
       data.send(method)
+    end
+
+    def columns
+      all_columns = database.prepare query_statement
+      all_columns.columns.map(&:to_sym)
+    end
+
+    def row_to_object(row)
+      object = @model.new
+      columns.each_with_index do |attribute, index|
+        object.send("#{attribute}=", row[index])
+      end
+      object
     end
   end
 end
