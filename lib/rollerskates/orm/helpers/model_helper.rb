@@ -4,7 +4,7 @@ module Rollerskates
   class ModelHelper
     class << self; attr_accessor :properties, :db; end
 
-    def database
+    def self.database
       @db ||= SQLite3::Database.new File.join("db", "app.db")
     end
 
@@ -60,33 +60,25 @@ module Rollerskates
       "AUTOINCREMENT " if value
     end
 
-    def update_query
-      "UPDATE #{table_name} SET #{placeholders_for_update} WHERE id = ?"
+    def self.table_name
+      to_s.downcase.pluralize
     end
 
-    def table_name
-      self.class.to_s.downcase.pluralize
-    end
-
-    def model_name
-      self.class
+    def self.model_name
+      to_s.downcase
     end
 
     def self.method_missing(method, *args)
       new.send(method, *args)
     end
 
-    def all_columns
-      @all_columns = database.prepare "SELECT * FROM #{table_name}"
-      @all_columns.columns.map(&:to_sym)
-    end
-
-    def method_missing(method, *args)
-      @model.send(method, *args)
-    end
-
     def self.all_columns
-      new.all_columns
+      columns = database.prepare "SELECT * FROM #{table_name}"
+      columns.columns.map(&:to_sym)
     end
+
+    # def method_missing(method, *args)
+    #   self.class.send(method, *args)
+    # end
   end
 end

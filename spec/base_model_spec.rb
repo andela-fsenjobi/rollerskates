@@ -9,7 +9,7 @@ describe "BaseModel" do
 
   describe ".model_name" do
     it "returns class of the" do
-      expect(Item.model_name).to eq Item
+      expect(Item.model_name).to eq "item"
     end
   end
 
