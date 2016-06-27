@@ -90,5 +90,30 @@ describe "Posts" do
         expect(Post.count).to eq 0
       end
     end
+
+    describe ".limit(5)" do
+      it "returns the number of records specified" do
+        create_posts(10)
+        posts = Post.limit(5)
+        expect(posts.length).to eq 5
+      end
+    end
+
+    describe ".order('id DESC')" do
+      it "returns the records in descending order" do
+        create_posts(10)
+        posts = Post.order("id DESC")
+        expect(posts.first.title).to eq "Post 10"
+      end
+    end
+
+    describe ".destroy(id)" do
+      it "destroys the record with specified id" do
+        create_posts(1)
+        post = Post.first
+        Post.destroy(post.id)
+        expect(Post.count).to eq 0
+      end
+    end
   end
 end

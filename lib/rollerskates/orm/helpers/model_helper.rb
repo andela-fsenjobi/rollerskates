@@ -68,17 +68,9 @@ module Rollerskates
       to_s.downcase
     end
 
-    def self.method_missing(method, *args)
-      new.send(method, *args)
-    end
-
     def self.all_columns
       columns = database.prepare "SELECT * FROM #{table_name}"
       columns.columns.map(&:to_sym)
     end
-
-    # def method_missing(method, *args)
-    #   self.class.send(method, *args)
-    # end
   end
 end
