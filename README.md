@@ -109,11 +109,25 @@ class Item < Rollerskates::BaseRecord
   create_table
   belongs_to :user
   has_many :product
+  
+  def self.recent
+    order("id DESC").limit(5)
+  end
 end
 ```
 Rolletskates automatically adds the `id, created_at and updated_at` fields and thus need not to be specified in the model. Other properties, however should be specified as above.
 
-You can make use of associations with the rollerskates framework.
+You can make use of associations with the rollerskates framework. Also, you can chain methods to a degree. Rollerskates ORM can accommodate chaining such as:
+> `select(:prop1, :prop2, :prop3)`
+> 
+> `where(prop2: "Value")`
+> 
+> `order("prop DESC")`
+> 
+> `limit(5)`
+
+And combinations such as:
+> `select(:id, :name).where(status: "active").limit(5)`
 
 NB: Unlike Rails, `Rollerskates` uses sigular expression for both `has_many` and `belongs_to`
 

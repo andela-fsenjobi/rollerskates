@@ -1,21 +1,13 @@
-require "rollerskates/orm/helpers/model_helper"
-require "rollerskates/orm/model_associations"
+require "rollerskates/orm/helpers/database_table_helper"
+require "rollerskates/orm/helpers/associable"
 require "rollerskates/orm/query_builder"
 
 module Rollerskates
-  class BaseModel < Rollerskates::ModelHelper
-    class << self; attr_accessor :query, :result, :values; end
-    def self.select(*columns)
-      query.select(columns)
-    end
+  class BaseModel
+    extend Rollerskates::Associable
+    extend Rollerskates::DatabaseTableHelper
 
-    def self.limit(value)
-      query.limit(value)
-    end
-
-    def self.where(value)
-      query.where(value)
-    end
+    class << self; attr_accessor :query, :properties; end
 
     def self.find(value)
       query.find_by(id: value).limit(1)
@@ -27,32 +19,24 @@ module Rollerskates
       query.find_by(key => value).limit(1)
     end
 
-    def self.first(number = nil)
-      query.first(number)
-    end
-
     def self.last(number = nil)
       query.order("id DESC").first(number)
+    end
+
+    def self.create(create_parameters)
+      query.build(create_parameters).save
     end
 
     def self.all
       query
     end
 
-    def self.destroy(id)
-      query.destroy(id)
-    end
-
-    def self.destroy_all
-      query.destroy_all
-    end
-
-    def self.count
-      query.count
-    end
-
     def self.query
       @query = Rollerskates::QueryBuilder.new self
+    end
+
+    def self.method_missing(method, *args, &block)
+      query.send(method, *args, &block)
     end
 
     def initialize(values = {})
@@ -76,10 +60,6 @@ module Rollerskates
           instance_variable_get(property.to_s)
       end
       object_hash
-    end
-
-    def self.create(create_parameters)
-      query.build(create_parameters).save
     end
   end
 end

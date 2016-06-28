@@ -67,8 +67,6 @@ module Rollerskates
       sql
     end
 
-    attr_reader :query
-
     def update(update_parameters)
       @update_parameters = update_parameters
       @query = "UPDATE #{table_name} SET \
