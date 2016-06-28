@@ -1,10 +1,14 @@
-require "rollerskates/orm/helpers/model_helper"
-require "rollerskates/orm/model_associations"
+require "rollerskates/orm/helpers/database_table_helper"
+require "rollerskates/orm/helpers/associable"
 require "rollerskates/orm/query_builder"
 
 module Rollerskates
-  class BaseModel < Rollerskates::ModelHelper
-    class << self; attr_accessor :query, :result, :values; end
+  class BaseModel
+    extend Rollerskates::Associable
+    extend Rollerskates::DatabaseTableHelper
+
+    class << self; attr_accessor :query, :properties; end
+
     def self.find(value)
       query.find_by(id: value).limit(1)
     end
