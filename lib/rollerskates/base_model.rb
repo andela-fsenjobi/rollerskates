@@ -1,5 +1,5 @@
 require "rollerskates/orm/helpers/database_table_helper"
-require "rollerskates/orm/helpers/associable"
+require "rollerskates/orm/associable"
 require "rollerskates/orm/query_builder"
 
 module Rollerskates
@@ -7,16 +7,22 @@ module Rollerskates
     extend Rollerskates::Associable
     extend Rollerskates::DatabaseTableHelper
 
-    class << self; attr_accessor :query, :properties; end
+    class << self; attr_accessor :properties; end
 
-    def self.find(value)
-      query.find_by(id: value).limit(1)
+    def initialize(values = {})
+      hash_to_properties(values) unless values.empty?
     end
 
-    def self.find_by(value)
-      key = value.keys.first
-      value = value.values.first
-      query.find_by(key => value).limit(1)
+    def save
+      self.class.query.build(to_hash).save
+    end
+
+    def self.find(value)
+      query.where({id: value}, true)
+    end
+
+    def self.find_by(find_conditions)
+      query.where(find_conditions, true)
     end
 
     def self.last(number = nil)
@@ -32,34 +38,28 @@ module Rollerskates
     end
 
     def self.query
-      @query = Rollerskates::QueryBuilder.new self
+      Rollerskates::QueryBuilder.new self
     end
 
     def self.method_missing(method, *args, &block)
       query.send(method, *args, &block)
     end
 
-    def initialize(values = {})
-      hash_to_properties(values) unless values.empty?
-    end
+    private
 
-    def hash_to_properties(hash)
-      hash.each do |column, value|
-        instance_variable_set("@#{column}", value)
+      def hash_to_properties(hash)
+        hash.each do |column, value|
+          instance_variable_set("@#{column}", value)
+        end
       end
-    end
 
-    def save
-      self.class.query.build(to_hash).save
-    end
-
-    def to_hash
-      object_hash = {}
-      instance_variables.each do |property|
-        object_hash[property[1..-1].to_sym] =
-          instance_variable_get(property.to_s)
+      def to_hash
+        hashed_object = {}
+        instance_variables.each do |property|
+          hashed_object[property[1..-1].to_sym] =
+            instance_variable_get(property.to_s)
+        end
+        hashed_object
       end
-      object_hash
-    end
   end
 end

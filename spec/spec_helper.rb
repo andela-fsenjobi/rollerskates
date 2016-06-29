@@ -15,3 +15,21 @@ RSpec.shared_context type: :feature do
 end
 
 ENV["RACK_ENV"] = "test"
+
+def create_items(n)
+  n.times do |i|
+    Item.create(name: "Femi_#{i + 1}", status: "Done")
+  end
+end
+
+def create_posts(n)
+  n.times do |i|
+    Post.create(title: "Post #{i + 1}", description: "This is my description")
+  end
+end
+
+def create_comments(n, post_id)
+  n.times do |_i|
+    Comment.create(name: "Femi", message: "My comment", post_id: post_id)
+  end
+end

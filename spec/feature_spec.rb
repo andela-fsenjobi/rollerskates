@@ -5,20 +5,36 @@ describe "Items", type: :feature do
     Item.destroy_all
   end
 
-  scenario "user supplies name and status" do
-    visit "/items/new/"
+  scenario "user visits home page" do
+    visit "/"
+    expect(page).to have_content "Create New Item"
+    expect(page).to have_content "All Items"
+  end
+
+  scenario "user clicks link to create new item" do
+    visit "/"
+    click_link "Create New Item"
     expect(page).to have_content "New Item"
+  end
+
+  scenario "user creates new item" do
+    visit "/items/new/"
     fill_in "item-name", with: "First Item"
     fill_in "item-status", with: "Done"
     click_button "item-submit"
     expect(page).to have_content "First Item"
+    expect(page.current_path).to eq "/items"
   end
 
-  scenario "user edits name and status" do
+  scenario "user clicks to edit item" do
     visit "/items/"
-    expect(page).to have_content "First Item"
     click_link "item-edit"
     expect(page.current_path).to end_with "/edit"
+  end
+
+  scenario "user edits item name and status" do
+    visit "/items/"
+    click_link "item-edit"
     fill_in "item-name", with: "First Item Edited"
     fill_in "item-status", with: "Done"
     click_button "item-submit"
