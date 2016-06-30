@@ -2,9 +2,24 @@ require "sqlite3"
 
 module Rollerskates
   module DatabaseTableHelper
+    def table_name
+      to_s.downcase.pluralize
+    end
+
     def database
       @db ||= SQLite3::Database.new File.join("db", "app.db")
     end
+
+    def model_name
+      to_s.downcase
+    end
+
+    def all_columns
+      columns = database.prepare "SELECT * FROM #{table_name}"
+      columns.columns.map(&:to_sym)
+    end
+    
+    private
 
     def add_property(property)
       @properties ||= [
@@ -21,7 +36,7 @@ module Rollerskates
 
     def create_table
       query = "CREATE TABLE IF NOT EXISTS #{table_name}\
-              (#{properties.join(', ')})"
+              (#{@properties.join(', ')})"
       database.execute(query)
 
       all_columns.each { |var| attr_accessor var }
@@ -56,19 +71,6 @@ module Rollerskates
 
     def auto_increment(value)
       "AUTOINCREMENT " if value
-    end
-
-    def table_name
-      to_s.downcase.pluralize
-    end
-
-    def model_name
-      to_s.downcase
-    end
-
-    def all_columns
-      columns = database.prepare "SELECT * FROM #{table_name}"
-      columns.columns.map(&:to_sym)
     end
   end
 end

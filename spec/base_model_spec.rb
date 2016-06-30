@@ -43,7 +43,7 @@ describe "BaseModel" do
     end
 
     describe "#destroy" do
-      it "removes the object with corresponding key from the table" do
+      it "deletes the object from the table" do
         create_items(2)
         item = Item.last
         item.destroy
@@ -82,7 +82,7 @@ describe "BaseModel" do
       end
 
       describe ".find" do
-        it "get the first row in a table" do
+        it "get the row with specified id from a table" do
           create_items(1)
           item = Item.first
           searched_item = Item.find(item.id)

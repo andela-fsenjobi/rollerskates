@@ -7,8 +7,6 @@ module Rollerskates
     extend Rollerskates::Associable
     extend Rollerskates::DatabaseTableHelper
 
-    class << self; attr_accessor :properties; end
-
     def initialize(values = {})
       hash_to_properties(values) unless values.empty?
     end

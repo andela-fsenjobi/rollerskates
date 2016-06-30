@@ -1,5 +1,7 @@
 module Rollerskates
   module QueryHelper
+    private
+    
     def table_name
       @model.table_name
     end

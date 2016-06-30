@@ -2,6 +2,8 @@ require "rollerskates/orm/helpers/query_helper"
 
 module Rollerskates
   class QueryBuilder
+    include Rollerskates::QueryHelper
+
     def initialize(model)
       @model = model
       @columns = []
@@ -81,9 +83,5 @@ module Rollerskates
       execute
       data
     end
-
-    private
-
-    include Rollerskates::QueryHelper
   end
 end
