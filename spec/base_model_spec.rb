@@ -28,6 +28,7 @@ describe "BaseModel" do
     describe ".all" do
       it "returns all records in the table" do
         create_items(5)
+
         expect(Item.all.length).to eq 5
       end
     end
@@ -35,6 +36,7 @@ describe "BaseModel" do
     describe "#save" do
       it "persists the specified object" do
         item = Item.new(name: "Femi Senjobi", status: "Done")
+
         item.save
 
         expect(Item.last.name).to eq "Femi Senjobi"
@@ -45,6 +47,7 @@ describe "BaseModel" do
     describe "#destroy" do
       it "deletes the object from the table" do
         create_items(2)
+
         item = Item.last
         item.destroy
 
@@ -55,6 +58,7 @@ describe "BaseModel" do
     describe "#update" do
       it "updates a row with new values" do
         create_items(1)
+
         first_item = Item.first
         first_item.update(name: "Femi Edited", status: "Edited")
         first_item.save
@@ -84,6 +88,7 @@ describe "BaseModel" do
       describe ".find" do
         it "get the row with specified id from a table" do
           create_items(1)
+
           item = Item.first
           searched_item = Item.find(item.id)
 
@@ -96,6 +101,7 @@ describe "BaseModel" do
       describe ".destroy_all" do
         it "destroys all the rows in the table" do
           create_items(10)
+
           Item.destroy_all
 
           expect(Item.count).to eq 0
@@ -111,7 +117,9 @@ describe "BaseModel" do
       describe ".limit(5)" do
         it "returns the number of records specified" do
           create_posts(10)
+
           posts = Post.limit(5)
+
           expect(posts.length).to eq 5
         end
       end
@@ -119,7 +127,9 @@ describe "BaseModel" do
       describe ".order('id DESC')" do
         it "returns the records in descending order" do
           create_posts(10)
+
           posts = Post.order("id DESC")
+
           expect(posts.first.title).to eq "Post 10"
         end
       end
@@ -127,8 +137,10 @@ describe "BaseModel" do
       describe ".destroy(id)" do
         it "destroys the record with specified id" do
           create_posts(1)
+
           post = Post.first
           Post.destroy(post.id)
+          
           expect(Post.count).to eq 0
         end
       end

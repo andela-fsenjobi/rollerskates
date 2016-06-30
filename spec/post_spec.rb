@@ -23,6 +23,7 @@ describe "Posts" do
       it "return count of zero for comments" do
         create_posts(1)
         post = Post.first
+        
         comments = post.comments
 
         expect(comments.size).to eq 0
@@ -36,6 +37,7 @@ describe "Posts" do
         create_posts(1)
         post = Post.first
         create_comments(2, post.id)
+
         comments = post.comments
 
         expect(comments.size).to eq 2
