@@ -18,7 +18,7 @@ module Rollerskates
       columns = database.prepare "SELECT * FROM #{table_name}"
       columns.columns.map(&:to_sym)
     end
-    
+
     private
 
     def add_property(property)

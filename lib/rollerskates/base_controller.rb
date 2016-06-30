@@ -32,7 +32,7 @@ module Rollerskates
     end
 
     def render_template(view_name, _locals = {})
-      views_folder = ["app", "views"].join("/")
+      views_folder = [APP_ROOT, "app", "views"].join("/")
       file_name = File.join(views_folder, controller_name, "#{view_name}.erb")
       layout_name = File.join(views_folder, "layouts", "application.erb")
       layout = Tilt.new(layout_name)
