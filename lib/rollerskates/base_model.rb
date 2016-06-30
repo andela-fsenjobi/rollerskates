@@ -7,8 +7,6 @@ module Rollerskates
     extend Rollerskates::Associable
     extend Rollerskates::DatabaseTableHelper
 
-    class << self; attr_accessor :properties; end
-
     def initialize(values = {})
       hash_to_properties(values) unless values.empty?
     end
@@ -18,7 +16,7 @@ module Rollerskates
     end
 
     def self.find(value)
-      query.where({id: value}, true)
+      query.where({ id: value }, true)
     end
 
     def self.find_by(find_conditions)
@@ -47,19 +45,19 @@ module Rollerskates
 
     private
 
-      def hash_to_properties(hash)
-        hash.each do |column, value|
-          instance_variable_set("@#{column}", value)
-        end
+    def hash_to_properties(hash)
+      hash.each do |column, value|
+        instance_variable_set("@#{column}", value)
       end
+    end
 
-      def to_hash
-        hashed_object = {}
-        instance_variables.each do |property|
-          hashed_object[property[1..-1].to_sym] =
-            instance_variable_get(property.to_s)
-        end
-        hashed_object
+    def to_hash
+      hashed_object = {}
+      instance_variables.each do |property|
+        hashed_object[property[1..-1].to_sym] =
+          instance_variable_get(property.to_s)
       end
+      hashed_object
+    end
   end
 end

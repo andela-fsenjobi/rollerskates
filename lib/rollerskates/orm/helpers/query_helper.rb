@@ -1,5 +1,7 @@
 module Rollerskates
   module QueryHelper
+    private
+
     def table_name
       @model.table_name
     end
@@ -30,7 +32,7 @@ module Rollerskates
 
     def update_values
       @update_parameters[:updated_at] = Time.now.to_s
-      @update_parameters.map { |key, value| key.to_s << " = '#{value}'" }
+      @update_parameters.map { |key, value| "#{key}" << " = '#{value}'" }
     end
 
     def select_phrase
